@@ -1,7 +1,21 @@
-﻿import { errorMonitor } from "events";
-import { NextFunction, Request, Response } from "express";
+﻿import { NextFunction, Request, Response } from "express";
 
 export default function errorHandler(error: Error, req: Request, res: Response, next: NextFunction) {
+  if (error.name === "Unauthorized") {
+    res.status(401).send(error.message);
+    return;
+  }
+
+  if (error.name === "NotFound") {
+    res.status(404).send(error.message);
+    return;
+  }
+
+  if (error.name === "Conflict") {
+    res.status(409).send(error.message);
+    return;
+  }
+
   if (error.name === "ValidationError") {
     res.status(422).send(error.message);
     return;
@@ -12,18 +26,8 @@ export default function errorHandler(error: Error, req: Request, res: Response, 
     return;
   }
 
-  if (error.name === "Conflict") {
-    res.status(409).send(error.message);
-    return;
-  }
-
-  if (error.name === "NotFound") {
-    res.status(404).send(error.message);
-    return;
-  }
-
-  if (error.name === "Unauthorized") {
-    res.status(401).send(error.message);
+  if (error.name === "expiredToken") {
+    res.status(498).send(error.message);
     return;
   }
 

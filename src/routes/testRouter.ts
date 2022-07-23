@@ -3,10 +3,11 @@
 import { create } from "../controllers/testController.js";
 
 import { schemaValidatorMiddleware as schemaValidator } from "../middlewares/schemaValidatorMiddleware.js";
+import validateApiToken from "../middlewares/validateApiToken.js";
 import createTestSchema from "../schemas/createTestSchema.js";
 
 const testRouter = Router();
 
-testRouter.post("/tests", schemaValidator(createTestSchema), create);
+testRouter.post("/tests", validateApiToken, schemaValidator(createTestSchema), create);
 
 export default testRouter;
