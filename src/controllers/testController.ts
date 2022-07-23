@@ -9,3 +9,9 @@ export async function create(req: Request, res: Response) {
 
   res.status(201).send("✔ created");
 }
+
+export async function getByDisciplines(req: Request, res: Response) {
+  const tests = await testService.getByDisciplines();
+
+  res.status(200).send(tests);
+}

@@ -3,7 +3,7 @@ import teacherDisciplineUtils from "../utils/teacherDisciplineUtils.js";
 import testRepository from "../repositories/testRepository.js";
 import categoryUtils from "../utils/categoryUtils.js";
 
-import testUtils from "../utils/TestUtils.js";
+import testUtils from "../utils/testUtils.js";
 
 export type CreateTestData = Omit<Test, "id">;
 
@@ -21,6 +21,12 @@ const testService = {
     };
 
     await testRepository.create(createTestInsertData);
+  },
+
+  getByDisciplines: async () => {
+    const tests = await testRepository.getByDisciplines();
+
+    return tests;
   },
 };
 

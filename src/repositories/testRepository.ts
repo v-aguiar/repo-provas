@@ -11,8 +11,36 @@ const testRepository = {
     });
   },
 
-  getByName: (name: string) => {
-    return prisma.test.findUnique({ where: { name } });
+  getByName: async (name: string) => {
+    return await prisma.test.findUnique({ where: { name } });
+  },
+
+  getByDisciplines: async () => {
+    return await prisma.term.findMany({
+      select: {
+        number: true,
+        disciplines: {
+          select: {
+            name: true,
+            teacherDisciplines: {
+              select: {
+                teacher: {
+                  select: {
+                    name: true,
+                  },
+                },
+                tests: {
+                  select: {
+                    name: true,
+                    pdfUrl: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
   },
 };
 
