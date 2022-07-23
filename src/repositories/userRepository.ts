@@ -1,5 +1,7 @@
-﻿import { prisma } from "../config/db.js";
-import { CreateUserData } from "../services/userService.js";
+﻿import { User } from "@prisma/client";
+import { prisma } from "../config/db.js";
+
+export type CreateUserData = Omit<User, "id">;
 
 const userRepository = {
   create: async (createUserData: CreateUserData) => {

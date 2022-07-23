@@ -1,7 +1,7 @@
 ﻿import Joi from "joi";
 import { User } from "@prisma/client";
 
-type CreateUserSchema = User & { confirmPassword: string };
+export type CreateUserSchema = User & { confirmPassword: string };
 
 const createUserSchema = Joi.object<CreateUserSchema>({
   email: Joi.string().email().required().messages({
