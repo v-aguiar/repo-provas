@@ -8,10 +8,10 @@ export type CreateUserData = Omit<User, "id">;
 const userService = {
   create: async (createUserData: CreateUserData) => {
     const { email, password } = createUserData;
-
     await userUtils.checkForUserConflict(email);
 
-    await userRepository.create({ email, password });
+    const hashedPassword = await userUtils.hashData(password);
+    await userRepository.create({ email, password: hashedPassword });
   },
 };
 

@@ -1,7 +1,7 @@
 import chalk from "chalk";
 import dotenv from "dotenv";
 
-import app from "./index.js";
+import app from "./app.js";
 
 dotenv.config();
 
