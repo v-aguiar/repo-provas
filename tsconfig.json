@@ -4,7 +4,8 @@
     "module": "es6",
     "moduleResolution": "node",
     "outDir": "dist",
-    "strict": true
+    "strict": true,
+    "target": "ES6"
   },
   "ts-node": {
     "esm": true
