@@ -21,16 +21,19 @@ const testRepository = {
         number: true,
         disciplines: {
           select: {
+            id: true,
             name: true,
             teacherDisciplines: {
               select: {
                 teacher: {
                   select: {
+                    id: true,
                     name: true,
                   },
                 },
                 tests: {
                   select: {
+                    id: true,
                     name: true,
                     pdfUrl: true,
                   },
@@ -41,6 +44,69 @@ const testRepository = {
         },
       },
     });
+  },
+
+  getByTeachers: async () => {
+    const tests = await prisma.teacher.findMany({
+      select: {
+        id: true,
+        name: true,
+        teacherDisciplines: {
+          select: {
+            tests: {
+              select: {
+                category: {
+                  select: {
+                    id: true,
+                    name: true,
+                    tests: {
+                      select: {
+                        teacherDiscipline: {
+                          select: {
+                            discipline: {
+                              select: {
+                                term: {
+                                  select: {
+                                    id: true,
+                                    number: true,
+                                    disciplines: {
+                                      select: {
+                                        teacherDisciplines: {
+                                          select: {
+                                            tests: {
+                                              select: {
+                                                id: true,
+                                                name: true,
+                                                pdfUrl: true,
+                                                teacherDiscipline: {
+                                                  select: {
+                                                    discipline: { select: { name: true } },
+                                                  },
+                                                },
+                                              },
+                                            },
+                                          },
+                                        },
+                                      },
+                                    },
+                                  },
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return tests;
   },
 };
 

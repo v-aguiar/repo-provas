@@ -28,6 +28,12 @@ const testService = {
 
     return tests;
   },
+
+  getByTeachers: async () => {
+    const tests = await testRepository.getByTeachers();
+
+    return tests;
+  },
 };
 
 export default testService;
