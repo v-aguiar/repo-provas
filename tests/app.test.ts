@@ -3,7 +3,8 @@
 import { prisma } from "../src/config/db.js";
 
 import app from "../src/app.js";
-import userFactory from "./factory/userFactory.js";
+import userFactory from "./factories/userFactory.js";
+import testFactory from "./factories/testFactory.js";
 
 beforeEach(async () => {
   await prisma.$executeRaw`TRUNCATE TABLE "tests"`;
@@ -62,7 +63,82 @@ describe("Authentication tests", () => {
   }, 10000);
 });
 
-describe("Test entity related tests", () => {});
+describe("Test entity related tests", () => {
+  it("should create a new test and return status 201, given valid data", async () => {
+    const login = userFactory.createLogin();
+    const user = await userFactory.createUser(login);
+
+    const signIn = await supertest(app).post("/sign-in").send({
+      email: user.email,
+      password: user.password,
+    });
+    const token = signIn.body.token;
+    const testData = testFactory.generateTestData();
+    const response = await supertest(app)
+      .post("/tests")
+      .send(testData)
+      .set("Authorization", `Bearer ${token}`);
+    expect(response.status).toBe(201);
+
+    const test = await prisma.test.findFirst({ where: { name: testData.name } });
+    expect(test?.name).toBe(testData.name);
+  }, 10000);
+
+  it("should return all created tests data, separated by disciplines, and status 200", async () => {
+    const login = userFactory.createLogin();
+    const user = await userFactory.createUser(login);
+
+    const signIn = await supertest(app).post("/sign-in").send({
+      email: user.email,
+      password: user.password,
+    });
+    const token = signIn.body.token;
+
+    const testData = testFactory.generateTestData();
+    await testFactory.createTest(testData);
+
+    const response = await supertest(app).get("/tests/disciplines").set("Authorization", `Bearer ${token}`);
+    expect(response.status).toBe(200);
+
+    const tests = response.body;
+    expect(tests).not.toBeNull;
+  }, 10000);
+
+  it("should return all created tests data, separated by teachers, and status 200", async () => {
+    const login = userFactory.createLogin();
+    const user = await userFactory.createUser(login);
+
+    const signIn = await supertest(app).post("/sign-in").send({
+      email: user.email,
+      password: user.password,
+    });
+    const token = signIn.body.token;
+
+    const testData = testFactory.generateTestData();
+    await testFactory.createTest(testData);
+
+    const response = await supertest(app).get("/tests/teachers").set("Authorization", `Bearer ${token}`);
+    expect(response.status).toBe(200);
+
+    const tests = response.body;
+    expect(tests).not.toBeNull;
+  }, 10000);
+
+  it("should return status 498 given an invalid token", async () => {
+    const login = userFactory.createLogin();
+    const user = await userFactory.createUser(login);
+
+    await supertest(app).post("/sign-in").send({
+      email: user.email,
+      password: user.password,
+    });
+
+    const response = await supertest(app)
+      .get("/tests/disciplines")
+      .set("Authorization", `Bearer wrong token`);
+    expect(response.status).toBe(498);
+  }, 10000);
+});
 
 afterAll(async () => {
   await prisma.$disconnect();

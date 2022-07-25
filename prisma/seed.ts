@@ -115,43 +115,53 @@ async function _disciplineUpsert() {
   });
 }
 
-async function _teacherDisciplineDeleteAndInsert() {
-  await prisma.$executeRaw`DELETE FROM "teacherDisciplines"`;
-
-  await prisma.teacherDiscipline.create({
-    data: {
+async function _teacherDisciplineUpsert() {
+  await prisma.teacherDiscipline.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
       teacherId: 1,
       disciplineId: 1,
     },
   });
-  await prisma.teacherDiscipline.create({
-    data: {
+  await prisma.teacherDiscipline.upsert({
+    where: { id: 2 },
+    update: {},
+    create: {
+      teacherId: 1,
+      disciplineId: 2,
+    },
+  });
+  await prisma.teacherDiscipline.upsert({
+    where: { id: 3 },
+    update: {},
+    create: {
       teacherId: 1,
       disciplineId: 3,
     },
   });
-  await prisma.teacherDiscipline.create({
-    data: {
-      teacherId: 1,
+  await prisma.teacherDiscipline.upsert({
+    where: { id: 4 },
+    update: {},
+    create: {
+      teacherId: 2,
       disciplineId: 4,
     },
   });
-  await prisma.teacherDiscipline.create({
-    data: {
+  await prisma.teacherDiscipline.upsert({
+    where: { id: 5 },
+    update: {},
+    create: {
       teacherId: 2,
       disciplineId: 5,
     },
   });
-  await prisma.teacherDiscipline.create({
-    data: {
+  await prisma.teacherDiscipline.upsert({
+    where: { id: 6 },
+    update: {},
+    create: {
       teacherId: 2,
       disciplineId: 6,
-    },
-  });
-  await prisma.teacherDiscipline.create({
-    data: {
-      teacherId: 2,
-      disciplineId: 7,
     },
   });
 }
@@ -161,7 +171,7 @@ async function _teacherDisciplineDeleteAndInsert() {
   await _categoryUpsert();
   await _teacherUpsert();
   await _disciplineUpsert();
-  await _teacherDisciplineDeleteAndInsert();
+  await _teacherDisciplineUpsert();
 })()
   .catch((error) => {
     console.error(error);
